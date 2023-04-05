@@ -4,11 +4,15 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using TMPro;
+using System.Collections.Generic;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
     public string region;
     public TMP_InputField RoomNameInput;
+
+    public RoomInList RoomItemPrefab;
+    public Transform ContentInScrollView;
 
     void Start()
     {
@@ -22,6 +26,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             return;
         }
+
+        PhotonNetwork.JoinLobby();
 
         Debug.Log($"Вы подключились. Регион: {PhotonNetwork.CloudRegion}");
     }
@@ -37,6 +43,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         options.MaxPlayers = 2;
 
         PhotonNetwork.CreateRoom(RoomNameInput.text, options, TypedLobby.Default);
+        PhotonNetwork.LoadLevel("Game");
     }
 
     public override void OnCreatedRoom()
@@ -47,5 +54,20 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnedCode, string message)
     {
         Debug.Log($"Не удалось создать комнату. Код ошибки: {returnedCode}. Сообщение: {message}");
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomInfos)
+    {
+        foreach (RoomInfo roomInfo in roomInfos)
+        {
+            RoomInList room = Instantiate(RoomItemPrefab, ContentInScrollView);
+
+            if (room is not null)
+            {
+                room.SetInfo(roomInfo);
+
+                Debug.Log($"Комната {roomInfo.Name}. Количество игроков: {room.PlayerCounter.text}");
+            }
+        }
     }
 }
