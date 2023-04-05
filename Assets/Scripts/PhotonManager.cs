@@ -29,7 +29,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.JoinLobby();
 
-        Debug.Log($"Вы подключились. Регион: {PhotonNetwork.CloudRegion}");
+        Debug.Log($"Вы подключились");
     }
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -69,5 +69,35 @@ public class PhotonManager : MonoBehaviourPunCallbacks
                 Debug.Log($"Комната {roomInfo.Name}. Количество игроков: {room.PlayerCounter.text}");
             }
         }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        PhotonNetwork.LoadLevel("Game");
+
+        Debug.Log($"Подключение игрока к комнате. Её имя: {PhotonNetwork.CurrentRoom.Name}");
+    }
+
+    public void JoinRandRoomButton()
+    {
+        PhotonNetwork.JoinRandomRoom();
+    }
+
+    public void JoinButton()
+    {
+        PhotonNetwork.JoinRoom(RoomNameInput.text);
+        PhotonNetwork.LoadLevel("Game");
+    }
+
+    public void ExitButton()
+    {
+        PhotonNetwork.LoadLevel("Main");
+    }
+
+    public override void OnLeftRoom()
+    {
+        PhotonNetwork.LoadLevel("Main");
+
+        Debug.Log($"Выход игрока из комнаты. Его имя: {PhotonNetwork.CurrentRoom.Name}");
     }
 }

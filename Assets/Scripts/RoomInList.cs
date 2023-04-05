@@ -15,4 +15,9 @@ public class RoomInList : MonoBehaviour
         RoomName.text = room.Name;
         PlayerCounter.text = $"{room.PlayerCount}/{room.MaxPlayers}";
     }
+
+    public void JoinToRoom()
+    {
+        PhotonNetwork.JoinRoom(RoomName.text);
+    }
 }
